@@ -18,16 +18,16 @@ const generateOrderItems = (input) => {
     return Object.keys(input).map(key => {
         let item = itemDB.getItemByBarCode(key);
         let name = item.name;
-        let quality = input[key];
+        let quantity = input[key];
         let unitPrice = item.price;
-        let priceInfo = calcItemPrice(key, quality)
-        let qualityUnit = item.unit;
+        let priceInfo = calcItemPrice(key, quantity)
+        let quantityUnit = item.unit;
         let moneyUnit = '元';
         return {
             name: name,
-            quality: quality,
+            quantity: quantity,
             unitPrice: unitPrice,
-            qualityUnit: qualityUnit,
+            quantityUnit: quantityUnit,
             moneyUnit: moneyUnit,
             actualPrice: priceInfo['actualPrice'],
             freeNum: priceInfo['freeNum'],
@@ -52,12 +52,49 @@ const calcTotalPriceInfo = (orderItems) => {
 };
 
 
+const generateBillList = (orderItems, totalPrice) => {
+    return generateShoppingList(orderItems) + generateFreeList(orderItems) + generatePriceList(totalPrice);
+};
+
+const generateShoppingList = (shoppingItems) => {
+    let title = "***<没钱赚商店>购物清单***";
+    let bottom = "----------------------";
+    let body = shoppingItems.reduce((acc, val) => acc += printItemInfo(val), "");
+    return title + '\n' + body + bottom + '\n';
+
+};
+
+const printItemInfo = (item) => {
+    return "名称：" + item.name + "，数量：" + item.quantity
+        + item.quantityUnit + "，单价：" + item.unitPrice.toFixed(2) + '(' + item.moneyUnit + ")，小计："
+        + item.actualPrice.toFixed(2) + '(' + item.moneyUnit + ")" + '\n';
+};
+
+const generateFreeList = (shoppingItems) => {
+    let title = "挥泪赠送商品：";
+    let bottom = "----------------------";
+    let body = shoppingItems.reduce((acc, val) => acc += printFreeItemInfo(val), "");
+    return title + '\n' + body + bottom + '\n';
+
+};
+
+const printFreeItemInfo = (item) => {
+    return item.freeNum === 0 ? "" : "名称：" + item.name + "，数量："
+        + item.freeNum + item.quantityUnit + '\n';
+};
+
+const generatePriceList = (totalPrice) => {
+    let bottom = "**********************";
+    let body =
+        "总计：" + totalPrice.total.toFixed(2) + '(' + totalPrice.moneyUnit + ")\n" +
+        "节省：" + totalPrice.save.toFixed(2) + '(' + totalPrice.moneyUnit + ")\n";
+    return body + bottom;
+};
 
 module.exports = function printInventory(inputs) {
     let orderItems = generateOrderItems(inputs);
-    let totalPriceInfor = calcTotalPriceInfo(orderItems);
-    console.log(orderItems);
-    console.log(totalPriceInfor);
-    console.log("Debug Info");
+    let totalPriceInfo = calcTotalPriceInfo(orderItems);
+    console.log(generateBillList(orderItems, totalPriceInfo));
+
     return 'Hello World!';
 };
