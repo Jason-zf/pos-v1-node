@@ -56,10 +56,10 @@ const generateBillList = (orderItems, totalPrice) => {
     return generateShoppingList(orderItems) + generateFreeList(orderItems) + generatePriceList(totalPrice);
 };
 
-const generateShoppingList = (shoppingItems) => {
+const generateShoppingList = (orderItems) => {
     let title = "***<没钱赚商店>购物清单***";
     let bottom = "----------------------";
-    let body = shoppingItems.reduce((acc, val) => acc += printItemInfo(val), "");
+    let body = orderItems.reduce((acc, val) => acc += printItemInfo(val), "");
     return title + '\n' + body + bottom + '\n';
 
 };
@@ -70,10 +70,10 @@ const printItemInfo = (item) => {
         + item.actualPrice.toFixed(2) + '(' + item.moneyUnit + ")" + '\n';
 };
 
-const generateFreeList = (shoppingItems) => {
+const generateFreeList = (orderItems) => {
     let title = "挥泪赠送商品：";
     let bottom = "----------------------";
-    let body = shoppingItems.reduce((acc, val) => acc += printFreeItemInfo(val), "");
+    let body = orderItems.reduce((acc, val) => acc += printFreeItemInfo(val), "");
     return title + '\n' + body + bottom + '\n';
 
 };
