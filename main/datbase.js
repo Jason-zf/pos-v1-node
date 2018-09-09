@@ -52,7 +52,17 @@ function loadPromotions() {
     ];
 }
 
+const getItemByBarCode = (itemBarCode) => {
+    return loadAllItems().find(v => v.barcode === itemBarCode);
+}
+
+const isBuyTwoGetOneFreeItem = (itemBarCode) => {
+    return loadPromotions().find(v => v.type === 'BUY_TWO_GET_ONE_FREE').barcodes.indexOf(itemBarCode) !== -1;
+}
+
 module.exports = {
     loadAllItems: loadAllItems,
-    loadPromotions: loadPromotions
+    loadPromotions: loadPromotions,
+    getItemByBarCode:getItemByBarCode,
+    isBuyTwoGetOneFreeItem:isBuyTwoGetOneFreeItem
 };

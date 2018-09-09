@@ -36,7 +36,6 @@ describe('pos', function () {
             '总计：51.00(元)\n' +
             '节省：7.50(元)\n' +
             '**********************';
-
         expect(console.log).toHaveBeenCalledWith(expectText);
     });
 });
