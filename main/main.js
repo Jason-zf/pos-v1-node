@@ -36,19 +36,28 @@ const generateOrderItems = (input) => {
     });
 };
 
-const calcItemPrice = (itemBarCode, quanlity) => {
+const calcItemPrice = (itemBarCode, quantity) => {
     let item = itemDB.getItemByBarCode(itemBarCode);
-    let originPrice = quanlity * item.price;
-    let freeNum = itemDB.isBuyTwoGetOneFreeItem(itemBarCode) ? Math.floor(quanlity * (1 / 3)) : 0;
+    let originPrice = quantity * item.price;
+    let freeNum = itemDB.isBuyTwoGetOneFreeItem(itemBarCode) ? Math.floor(quantity * (1 / 3)) : 0;
     let saveMoney = freeNum * item.price;
     let actualPrice = originPrice - saveMoney;
     return {'actualPrice': actualPrice, 'freeNum': freeNum, 'saveMoney': saveMoney};
 };
 
+const calcTotalPriceInfo = (orderItems) => {
+    let total = orderItems.reduce((acc, val) => acc += val.actualPrice, 0);
+    let save = orderItems.reduce((acc, val) => acc += val.saveMoney, 0);
+    return {'total': total, 'save': save, 'moneyUnit': '元'};
+};
+
+
 
 module.exports = function printInventory(inputs) {
     let orderItems = generateOrderItems(inputs);
+    let totalPriceInfor = calcTotalPriceInfo(orderItems);
     console.log(orderItems);
+    console.log(totalPriceInfor);
     console.log("Debug Info");
     return 'Hello World!';
 };
